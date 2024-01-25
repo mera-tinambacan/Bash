@@ -30,3 +30,4 @@ echo "The sum of $1 and $2 is: $result"
 #run the add.sh and provide the parameters (example below)
 #bash add.sh 5 4
 #result: The sum of 5 and 4 is: 9
+
