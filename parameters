@@ -18,3 +18,15 @@ hello Mera Mers Merac
 #Hello Mera
 #Hello Mers
 #Hello Merac
+
+
+# -- Passing of Parameter --
+
+result=$(( $1 + $2 ))
+
+echo "The sum of $1 and $2 is: $result"
+
+#save the file as add.sh
+#run the add.sh and provide the parameters (example below)
+#bash add.sh 5 4
+#result: The sum of 5 and 4 is: 9
