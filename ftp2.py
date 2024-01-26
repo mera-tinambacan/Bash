@@ -11,7 +11,7 @@ def upload_directory(ftp, local_directory, remote_directory):
         if os.path.isfile(item_path):
             with open(item_path, 'rb') as file:
                 remote_file = os.path.join(remote_directory, item)
-                ftp.storbinary('STOR ' + remote_file, file)
+                ftp.storlines('STOR ' + remote_file, file)
                 print(f'File "{item}" uploaded successfully to "{remote_file}"')
 
                 # Delete the local file after successful upload
@@ -33,7 +33,8 @@ def main():
     #Upload all files from local directory to the server
     upload_directory(ftp, local_directory_to_upload, remote_directory)
 
-    ftp.quit() # Close the FTP connection
+    # Close the FTP connection
+    ftp.quit()
 
 if __name__ == "__main__":
     main()
