@@ -1,7 +1,8 @@
 from ftplib import FTP
 import os #to interact with the operating system, for working with file paths and directory listings
 
-
+local_directory_to_upload = '/home/merac_tinambacan/test_directory'
+remote_directory = 'destination'
 
 def upload_directory(ftp, local_directory, remote_directory):
     for item in os.listdir(local_directory):
@@ -13,14 +14,16 @@ def upload_directory(ftp, local_directory, remote_directory):
                 ftp.storbinary('STOR ' + remote_file, file)
                 print(f'File "{item}" uploaded successfully to "{remote_file}"')
 
+                # Delete the local file after successful upload
+                os.remove(item_path)
+                print(f'Local file "{item}" deleted.')
+
 def main():
     #ProFTPD server details
     ftp_server = '127.0.0.1'
     ftp_port = 21 
     ftp_user = 'mers'
     ftp_password = 'mers'
-
-    remote_directory = 'destination'
     
     # Connect to the FTP server
     ftp = FTP()
@@ -28,7 +31,6 @@ def main():
     ftp.login(user=ftp_user, passwd=ftp_password)
 
     #Upload all files from local directory to the server
-    local_directory_to_upload = '/home/merac_tinambacan/test_directory'
     upload_directory(ftp, local_directory_to_upload, remote_directory)
 
     ftp.quit() # Close the FTP connection
