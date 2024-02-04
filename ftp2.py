@@ -1,7 +1,7 @@
 from ftplib import FTP
 import os #to interact with the operating system, for working with file paths and directory listings
 
-local_directory_to_upload = '/home/merac_tinambacan/test_directory'
+local_directory_to_upload = '/home/merac/test_directory'
 remote_directory = 'destination'
 
 def upload_directory(ftp, local_directory, remote_directory):
@@ -42,5 +42,5 @@ if __name__ == "__main__":
 #############
 
 # Grant write permissions to the owner, group, and others for the directory
-#chmod a+w /home/mers/destination
 #sudo chmod 755 /home/mers/destination
+#sudo chmod a+w /home/mers/destination

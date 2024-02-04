@@ -1,0 +1,65 @@
+UBUNTU
+
+wsl --unregister Ubuntu
+wsl --list (check currently installed)
+wsl --list --online (pangcheck what to install)
+wsl --install Ubuntu
+#enter user and pw
+sudo apt update
+sudo vi /etc/wsl.conf
+#insert: [boot]; systemd=true
+exit
+wsl --shutdown
+wsl -d Ubuntu
+systemctl #okay na
+sudo apt-get install proftpd
+sudo proftpd --version
+sudo apt-get install proftpd-mod-crypto
+sudo systemctl status proftpd
+
+Start and Enable the ProFTPD Service
+sudo systemctl start proftpd
+sudo systemctl enable proftpd
+sudo systemctl status proftpd
+
+Create Users for the ProFTPD Server
+sudo useradd -m mers
+sudo passwd mers
+
+Configuring SSL/TLS With ProFTPD
+sudo apt-get install openssl -y
+
+Generate a Certificate for the ProFTPD Server
+sudo openssl req -x509 -newkey rsa:1024 -keyout /etc/ssl/private/proftpd.key -out /etc/ssl/certs/proftpd.crt -nodes -days 365
+
+sudo chmod 600 /etc/ssl/private/proftpd.key
+sudo chmod 600 /etc/ssl/certs/proftpd.crt
+
+Uncomment the following line in the file
+sudo nano /etc/proftpd/proftpd.conf
+Include /etc/proftpd/tls.conf
+
+sudo nano /etc/proftpd/tls.conf
+<IfModule mod_tls.c>
+TLSEngine on
+TLSLog /var/log/proftpd/tls.log
+TLSProtocol SSLv23
+TLSRSACertificateFile /etc/ssl/certs/proftpd.crt
+TLSRSACertificateKeyFile /etc/ssl/private/proftpd.key
+TLSOptions NoCertRequest EnableDiags NoSessionReuseRequired
+TLSOptions AllowClientRenegotiations
+TLSRequired on
+
+Restart the ProFTPD for the changes to take effect
+sudo systemctl restart proftpd
+
+
+Uninstall ProFTPD on Ubuntu
+sudo systemctl stop proftpd
+sudo apt-get autoremove proftpd-dev
+sudo apt-get purge proftpd-basic
+
+ ee key too small error change rsa:1024 to a larger size
+sudo openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/proftpd.key -out /etc/ssl/certs/proftpd.crt -days 365 -nodes
+
+sudo chmod 600 /etc/ssl/private/proftpd.key
