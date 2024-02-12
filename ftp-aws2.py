@@ -22,6 +22,6 @@ def lambda_handler(event, context):
     except Exception as e:
         print(f"Error: {e}")
 
-
-#increase timeout and include port 21 in outbound and inbound in security group; and maybe add permission about vpc?
+#ssh -i .\ftpKey.pem ec2-user@3.104.78.147
+#increase timeout; include port 21 in outbound and inbound in security group-EC2; and maybe add permission about vpc?
 #change event jason format

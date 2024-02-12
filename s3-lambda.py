@@ -11,7 +11,7 @@ def lambda_handler(event, context):
         s3_key = event['Records'][0]['s3']['object']['key']
 
         # Configure FTP connection settings
-        ftp_host = "13.211.18.29"
+        ftp_host = "3.104.115.29"
         ftp_user = "aws"
         ftp_password = "aws"
         target_directory = "/home/ubuntu/test_directory"
