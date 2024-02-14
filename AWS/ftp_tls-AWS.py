@@ -43,8 +43,8 @@ def lambda_handler(event, context):
                 # Close FTP connection
                 ftp.quit()
 
-                # Delete the local file
-                os.remove(local_file_path)
+                # Delete the S3 object
+                s3.delete_object(Bucket=s3_bucket, Key=s3_key)
 
                 print(f"File {s3_key} transferred to FTPTLS server successfully.")
 
