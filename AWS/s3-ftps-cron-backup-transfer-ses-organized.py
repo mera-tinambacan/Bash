@@ -35,7 +35,7 @@ def upload_to_ftp(local_file_path, ftp):
     try:
         ftp.cwd(target_directory)
         with open(local_file_path, 'rb') as file:
-            ftp.storbinary('STOR ' + os.path.basename(local_file_path), file)
+            ftp.storlines('STOR ' + os.path.basename(local_file_path), file)
         print(f"File {local_file_path} uploaded to FTP server successfully.")
     except Exception as e:
         print(f"Error uploading file {local_file_path} to FTP server: {e}")
@@ -101,4 +101,3 @@ def lambda_handler(event, context):
 
     except Exception as e:
         print(f"Error: {e}")
-
