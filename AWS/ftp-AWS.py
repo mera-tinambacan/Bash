@@ -1,51 +1,58 @@
 import os
 import boto3
-from ftplib import FTP
+from ftplib import FTP_TLS
 import json
 
 # Configure FTP connection settings
-ftp_host = "3.104.115.29"
-ftp_user = "aws"
-ftp_password = "aws"
-target_directory = "/home/ubuntu/test_directory"
+ftp_host = "3.0.184.148"
+ftp_user = "tejun"
+ftp_password = "tejun"
+target_directory = "/home/ubuntu/directory"
 
-# Initialize S3 and FTP clients
+# Initialize S3
 s3 = boto3.client('s3')
-ftp = FTP(ftp_host)
-ftp.login(ftp_user, ftp_password)
 
 def lambda_handler(event, context):
-
     try:
-        # Check if the event contains records
-        if 'Records' in event:
-            # Loop through records (usually there's only one)
-            for record in event['Records']:
-                # Extract S3 bucket and object key from the record
-                s3_bucket = record['s3']['bucket']['name']
-                s3_key = record['s3']['object']['key']
+        #Connect to the FTP server
+        ftp = FTP_TLS(ftp_host)
+        ftp.login(ftp_user, ftp_password)
+        
+        # Explicitly call prot_p() to enable TLS encryption
+        ftp.prot_p()
+        
+        # Change working directory to the source directory on FTP server
+        ftp.cwd(target_directory)
 
-                # Download the file from S3 to local storage
-                local_file_path = '/tmp/' + os.path.basename(s3_key)
-                s3.download_file(s3_bucket, s3_key, local_file_path)
+        # List files in the source directory on FTP server
+        files = ftp.nlst()
 
-                # Change working directory to the target directory on FTP server
-                ftp.cwd(target_directory)
+        # Check if files exist
+        if files:
+            # Loop through files
+            for file_name in files:
+                # Download the file from FTP server to local storage
+                local_file_path = '/tmp/' + os.path.basename(file_name)
+                with open(local_file_path, 'wb') as local_file:
+                    ftp.retrbinary('RETR ' + file_name, local_file.write)
 
-                # Upload the file to the FTP server
+                # Upload the file to the S3 bucket
                 with open(local_file_path, 'rb') as file:
-                    ftp.storbinary('STOR ' + os.path.basename(local_file_path), file)
+                    s3.upload_fileobj(file, 'ftp-tos3', file_name)
+                    
+                # Delete the file from the FTP server
+                ftp.delete(file_name)
 
-                # Close FTP connection
-                ftp.quit()
-
-                # Delete the local file
+                # Delete the local file after upload
                 os.remove(local_file_path)
 
-                print(f"File {s3_key} transferred to FTP server successfully.")
+                print(f"File {file_name} transferred to S3 bucket successfully.")
 
         else:
-            print("Error: 'Records' key not found in the event. Malformed event structure.")
+            print("No files found in the source directory on FTP server.")
+
+        # Close FTP connection
+        ftp.quit()
 
     except Exception as e:
         print(f"Error: {e}")
