@@ -7,17 +7,24 @@ npm init -y
 npm install express
 app.js
 ---
+// Import the Express module and assign it to the variable 'express'
 const express = require('express');
+
+// Create an instance of the Express application
 const app = express();
+
+// Define the port number where the server will listen. It defaults to 3000 if the PORT environment variable is not set.
 const PORT = process.env.PORT || 3000;
 
-// Define a route
+// Define a route for GET requests to the root URL ('/')
 app.get('/', (req, res) => {
+    // When a GET request is made to '/', send the response 'Hello, this is your API!'
     res.send('Hello, this is your API!');
 });
 
-// Start the server
+// Start the server and make it listen on the specified port. When the server starts, the callback function is executed.
 app.listen(PORT, () => {
+    // Output a message to the console indicating that the server is running and listening on the specified port
     console.log(`Server is running on port ${PORT}`);
 });
 ---
