@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Source the parameter function
 source parameter_function.sh
 
 # FTPS server details
@@ -40,7 +41,7 @@ transfer() {
   username=$(get_parameter "/ftp/username")
   password=$(get_parameter "/ftp/password")
 
-  put_logs "[INFO] Downloading $s3_key from S3..."
+  put_logs "[INFO] Downloading $s3_key from S3 $s3_bucket bucket"
   aws s3 cp "s3://$s3_bucket/$s3_key" "$temp_dir/$s3_key"
   if [ $? -eq 0 ]; then
     put_logs "[INFO] Download complete."
@@ -49,14 +50,14 @@ transfer() {
     curl -k --ftp-ssl --user "$username:$password" -T "$local_file" "$ftps_server"
     if [ $? -eq 0 ]; then
       put_logs "[INFO] Transfer complete."
-      put_logs "[INFO] Deleting $s3_key from S3 bucket..."
+      put_logs "[INFO] Deleting $s3_key from S3 $s3_bucket bucket."
       aws s3 rm "s3://$s3_bucket/$s3_key"
       put_logs "[INFO] Deletion complete."
     else
       put_logs "[ERROR] Failed to transfer $local_file to FTPS server."
     fi
   else
-    put_logs "[ERROR] Failed to download $s3_key from S3."
+    put_logs "[ERROR] Failed to download $s3_key from S3 $s3_bucket bucket."
   fi
 }
 
