@@ -25,11 +25,15 @@ put_logs() {
   local log_level="$1"
   local message="$2"
   local timestamp=$(date +%s%3N) # Get current timestamp in milliseconds
+  
+  # Construct the JSON object for the log event
+  local log_event="{\"timestamp\": $timestamp, \"message\": \"$log_level - $message\"}"
 
+  # Use the AWS CLI to put the log event
   aws logs put-log-events \
     --log-group-name "$log_group_name" \
     --log-stream-name "$log_stream_name" \
-    --log-events "timestamp=$timestamp,message=$message,logLevel=$log_level"
+    --log-events "$log_event"
 }
 
 transfer() {
