@@ -42,7 +42,7 @@ transfer() {
   password=$(get_parameter "/ftp/password")
 
   put_logs "Downloading $ftps_file from FTPS..."
-  curl -k --ftp-ssl --user "$username:$password" "$ftps_server/$ftps_file" -o "$temp_dir/$ftps_file"
+  curl -k --ftp-ssl --user "$username:$password" "$ftps_server/source/$ftps_file" -o "$temp_dir/$ftps_file"
   if [ $? -eq 0 ]; then
     put_logs "[INFO] Download complete."
     local_file="$temp_dir/$ftps_file"
@@ -50,7 +50,7 @@ transfer() {
     aws s3 cp "$local_file" "s3://$s3_bucket"
     put_logs "[INFO] Transfer complete."
     put_logs "[INFO] Deleting $ftps_file from FTPS server..."
-    curl -k --ftp-ssl --user "$username:$password" -Q "DELE $ftps_file" "$ftps_server"
+    curl -k --ftp-ssl --user "$username:$password" -Q "DELE source/$ftps_file" "$ftps_server" 
     put_logs "[INFO] Deletion complete."
   else
     put_logs "[ERROR] Failed to download $ftps_file from FTPS."
